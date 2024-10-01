@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Portfolio</title>
+</head>
+<body>
+  <h1>Crypto Portfolio</h1>
+
+  <h2>Portfolio</h2>
+  <ul id="portfolio"></ul>
+
+  <h3>Total Portfolio Value: $<span id="total-value">0</span></h3>
+
+  <script>
+    const apiKey = '1ed6764e-d0df-4a34-9a2e-b6dad1f1f2d1'; // Replace with your CoinMarketCap API key
+    let portfolio = [];
+
+    // Load portfolio from 'portfolio.json' file automatically on page load
+    async function loadPortfolioFromFile() {
+      try {
+        const response = await fetch('portfolio.json');
+        if (!response.ok) {
+          throw new Error('Failed to load portfolio file.');
+        }
+        portfolio = await response.json();
+        displayPortfolio();
+        calculateTotalValue();
+      } catch (error) {
+        console.error('Error loading portfolio:', error);
+      }
+    }
+
+    // Display portfolio items
+    function displayPortfolio() {
+      const portfolioList = document.getElementById('portfolio');
+      portfolioList.innerHTML = '';
+      portfolio.forEach(crypto => {
+        const li = document.createElement('li');
+        li.textContent = `${crypto.amount} of ${crypto.name}`;
+        portfolioList.appendChild(li);
+      });
+    }
+
+    // Get the price of a cryptocurrency using the CoinMarketCap API
+    async function getCryptoPrice(symbol) {
+      const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${symbol}&convert=USD`;
+      const response = await fetch(url, {
+        headers: {
+          'X-CMC_PRO_API_KEY': apiKey,
+        },
+      });
+      const data = await response.json();
+      return data.data[symbol].quote.USD.price;
+    }
+
+    // Calculate the total value of the portfolio
+    async function calculateTotalValue() {
+      let total = 0;
+      for (let crypto of portfolio) {
+        const price = await getCryptoPrice(crypto.name);
+        total += price * crypto.amount;
+      }
+      document.getElementById('total-value').textContent = total.toFixed(2);
+    }
+
+    // Automatically load portfolio when the page loads
+    window.onload = loadPortfolioFromFile;
+
+  </script>
+</body>
+</html>

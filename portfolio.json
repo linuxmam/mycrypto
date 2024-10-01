@@ -1,0 +1,26 @@
+[
+  {
+    "name": "BTC",
+    "amount": 1.0178
+  },
+  {
+    "name": "ETH",
+    "amount": 122.66
+  },
+  {
+    "name": "STX",
+    "amount": 6666
+  },
+  {
+    "name": "XRP",
+    "amount": 11600
+  },
+  {
+    "name": "FLR",
+    "amount": 130000
+  },
+  {
+    "name": "LUNC",
+    "amount": 13600000
+  }
+]
